@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-functionName="coldstarttest-helloworld-java"
-memorySizes="128 256 512 1024 1536 2048 2560 3008"
+memorySizes="256 512 1024 1536 2048 2560 3008"
+
+functionName=$1
+if [[ -z $functionName ]]; then
+  echo "USAGE: test-cold-starts.sh <function_name>"
+  exit 1
+fi
 
 for i in {1..10}
 do
@@ -12,10 +17,13 @@ do
     echo "Updating $functionName"
     aws lambda update-function-configuration --function-name $functionName --memory-size $memorySize > /dev/null
 
-    echo "Invoking lambda"
+    echo "Wait five seconds ..."
+    sleep 5
+
+    echo "Invoking the lambda"
     aws lambda invoke --function-name $functionName --payload "{}" ./lambda-response.json > /dev/null
 
-    echo "Sleeping for 5 seconds ... "
+    echo "Wait five seconds ..."
     sleep 5
   done
 done
