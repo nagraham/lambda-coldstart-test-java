@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.UUID;
 
-public class PutTodoHandler implements RequestHandler<Map<String, String>, String> {
+public class PutTodoHandlerV2 implements RequestHandler<Map<String, String>, String> {
 
     private static final String TABLE_NAME = "TestColdStarts20200811";
     private static final String FAKE_TITLE = "fake title";
@@ -24,7 +24,7 @@ public class PutTodoHandler implements RequestHandler<Map<String, String>, Strin
 
     private final DynamoDbClient dynamoDbClient;
 
-    public PutTodoHandler() {
+    public PutTodoHandlerV2() {
         try {
             dynamoDbClient = DynamoDbClient.builder()
                     .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
@@ -34,6 +34,8 @@ public class PutTodoHandler implements RequestHandler<Map<String, String>, Strin
                     .overrideConfiguration(ClientOverrideConfiguration.builder().build())
                     .build();
 
+            // throw-away call to initialize lazy-loaded reflection code in SDK + establish SSL handshake
+            dynamoDbClient.describeTable(DescribeTableRequest.builder().tableName(TABLE_NAME).build());
         } catch (URISyntaxException e) {
             throw new RuntimeException("Failed to set URI for DynamoDB", e);
         }

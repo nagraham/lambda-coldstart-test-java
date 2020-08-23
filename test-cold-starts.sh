@@ -8,7 +8,7 @@ if [[ -z $functionName ]]; then
   exit 1
 fi
 
-for i in {1..10}
+for i in {1..50}
 do
   for memorySize in $memorySizes
   do
@@ -24,6 +24,6 @@ do
     aws lambda invoke --function-name $functionName --payload "{}" ./lambda-response.json > /dev/null
 
     echo "Wait five seconds ..."
-    sleep 5
+    sleep 1
   done
 done
